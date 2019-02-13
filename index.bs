@@ -80,6 +80,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
         text: DataView; url: sec-dataview-objects
         text: Map; url: sec-map-objects
         text: Promise; url: sec-promise-objects
+        text: PromiseCapability; url: sec-promisecapability-records
         text: Set; url: sec-set-objects
         text: SharedArrayBuffer; url: sec-sharedarraybuffer-objects
         text: %ErrorPrototype%; url: sec-properties-of-the-error-prototype-object
@@ -7847,15 +7848,16 @@ ECMAScript Object values.
 <h4 id="es-promise">Promise types — Promise&lt;|T|&gt;</h4>
 
 IDL [=promise type=] values are
-represented by ECMAScript {{ECMAScript/Promise}}
-objects.
+represented by ECMAScript {{ECMAScript/PromiseCapability}}
+records.
 
 <div id="es-to-promise" algorithm="convert an ECMAScript value to promise">
 
     An ECMAScript value |V| is [=converted to an IDL value|converted=]
     to an IDL <a interface lt="Promise">Promise<var ignore>T</var></a> value as follows:
 
-    1.  Let |promise| be [=!=] <a abstract-op>Call</a>({{%Promise_resolve%}}, {{%Promise%}}, «|V|»).
+    1.  Let |promise| be [=!=] [$PromiseResolve$]({{%Promise%}}, |V|).
+    1.  Issue: this is not a record
     1.  Return the IDL [=promise type=] value that is a reference to the
         same object as |promise|.
 </div>
@@ -7863,7 +7865,7 @@ objects.
 <p id="promise-to-es">
     The result of [=converted to an ECMAScript value|converting=]
     an IDL [=promise type=] value to an ECMAScript
-    value is the {{ECMAScript/Promise}} value that represents a reference to the same object that the
+    value is the value of the \[[Promise]] field of the record that
     IDL [=promise type=] represents.
 </p>
 
