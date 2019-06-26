@@ -4120,8 +4120,9 @@ must not also have an
 An interface with an [=iterable declaration=]
 and its [=inherited interfaces=]
 must not have a
-[=maplike declaration=] or
-[=setlike declaration=].
+[=maplike declaration=],
+[=setlike declaration=], or
+[=asynchronously iterable declaration=].
 
 The following extended attributes are applicable to [=iterable declarations=]:
 [{{Exposed}}],
@@ -4168,7 +4169,8 @@ iteration – or a tuple with three elements:
 
 1.  a value of the first type given in the declaration;
 1.  a value of the second type given in the declaration;
-1.  an opaque value that is passed back to the next invocation of the algorithm,
+1.  an opaque value that is passed back to the next invocation of the algorithm as the
+    <b>[=current state=]</b>.
 
 The prose may also define <dfn>asynchronous iterator initialization steps</dfn> for the
 [=interface=] with an [=asynchronously iterable declaration=], which would then be called with the
@@ -4206,17 +4208,18 @@ or have any [=inherited interfaces=] that have [=interface members=] with these 
         following steps:
 
         1.  Let |promise| be a new promise.
-        1.  Let |key| be as follows:
+        1.  Let |key| be the following value, if it exists, or null otherwise:
             <dl class="switch">
-                  :  If <b>current state</b> is not given
-                  :: the username in <b>this</b>'s open sessions that is first in lexicographical
-                     order
+                  :  If <b>current state</b> is "not yet started"
+                  :: the smallest username in <b>this</b>'s open sessions, in lexicographical order
 
-                  :  If <b>current state</b> is given
-                  :: the username in <b>this</b>'s open sessions that is next in lexicographical
-                     order, after <b>current state</b>
+                  :  Otherwise
+                  :: the smallest username in <b>this</b>'s open sessions that is greater than
+                     <b>current state</b>, in lexicographical order
             </dl>
-        1.  If there is no such |key|, then:
+
+            Note: <b>current state</b> might no longer be present in the open sessions.
+        1.  If |key| is null, then:
             1.  Resolve |promise| with undefined.
         1.  Otherwise:
             1.  Let |session| be the <code class="idl">Session</code> object corresponding to |key|.
@@ -12063,15 +12066,16 @@ A [=default asynchronous iterator object=] has internal values:
 *   its <dfn for="default asynchronous iterator object">kind</dfn>, which is the iteration kind,
 *   its <dfn for="default asynchronous iterator object">ongoing promise</dfn>, which is a
     {{Promise}} or undefined,
-*   its <dfn for="default asynchronous iterator object">state</dfn>, which is an opaque value used
-    to store the position of the iterator by the algorithm to [=get the next iteration result=], or
-    null.
+*   its <dfn for="default asynchronous iterator object">state</dfn>, which is one of
+    "not yet started" and "finished", or an opaque value used to store the position of the iterator
+    by the algorithm to [=get the next iteration result=].
 
     Note: This value is associated with the iterator instance, rather than the [=interface=]
     instance. It is explicitly handled here because the iterator instance is not exposed to the
     prose that [=get the next iteration result|gets the next iteration result=].
 
-When a [=default asynchronous iterator object=] is first created, its state is not given.
+When a [=default asynchronous iterator object=] is first created, its
+[=default asynchronous iterator object/state=] is "not yet started".
 
 Note: [=Default asynchronous iterator objects=] do not have [=class strings=]; when
 <code class="idl">Object.prototype.toString()</code> is called on a
@@ -12127,7 +12131,7 @@ The \[[Prototype]] [=internal slot=] of an [=asynchronous iterator prototype obj
     1.  Let |nextSteps| be the following steps:
         1.  Let |nextPromiseCapability| be [=!=] [$NewPromiseCapability$]({{%Promise%}}).
         1.  Let |oldState| be |object|'s [=default asynchronous iterator object/state=].
-        1.  If |oldState| is null, then:
+        1.  If |oldState| is "finished", then:
             1.  Let |result| be [$CreateIterResultObject$](<emu-val>undefined</emu-val>,
                 <emu-val>true</emu-val>).
             1.  Perform [=!=] [$Call$](|nextPromiseCapability|.\[[Resolve]],
