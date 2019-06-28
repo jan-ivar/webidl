@@ -4149,7 +4149,7 @@ An [=interface=] can be declared to be asynchronously iterable by using an
 
 <pre class="syntax">
     interface interface_identifier {
-      async_iterable&lt;key_type, value_type&gt;;
+      async iterable&lt;key_type, value_type&gt;;
     };
 </pre>
 
@@ -4190,7 +4190,7 @@ or have any [=inherited interfaces=] that have [=interface members=] with these 
         interface SessionManager {
           Session getSessionForUser(DOMString username);
 
-          async_iterable&lt;DOMString, Session&gt;;
+          async iterable&lt;DOMString, Session&gt;;
         };
 
         [Exposed=Window]
@@ -4274,7 +4274,7 @@ When they are, the effect will be as you would expect.
 
 <pre class="grammar" id="prod-AsyncIterable">
     AsyncIterable :
-        "async_iterable" "&lt;" TypeWithExtendedAttributes "," TypeWithExtendedAttributes "&gt;" ";"
+        "async" "iterable" "&lt;" TypeWithExtendedAttributes "," TypeWithExtendedAttributes "&gt;" ";"
 </pre>
 
 
