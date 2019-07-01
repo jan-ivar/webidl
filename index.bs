@@ -8692,7 +8692,8 @@ The [{{Global}}] extended attribute must be one of the forms given above.
 
 Note: The [=global names=] for the [=interface=] are the [=identifiers=] that can be used to
 reference it in the [{{Exposed}}] [=extended attribute=].
-A single name can be used to reference multiple global interfaces.
+A single name can be shared across multiple different global interfaces, 
+allowing an interface to more easily use [{{Exposed}}] to expose itself to all of them at once.
 For example, "Worker" is used to refer to several distinct types of threading-related
 global interfaces.
 
